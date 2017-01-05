@@ -1,0 +1,71 @@
+<link rel="import" href="../polymer/polymer.html">
+<!--
+`jr-textarea`
+Text Area con contador de caracteres
+
+@demo demo/index.html
+-->
+
+<dom-module id="jr-textarea">
+  <template>
+    <style>
+      :host {
+        display: block;
+        font-family: sans-serif;
+      }
+      .green{
+        color: #00b259;
+      }
+    </style>
+    <textarea id="area" class="form-control" on-keyup="calculaCaracteres" on-change="validar" maxlength="0" name="[[name]]" rows="[[rows]]" cols="[[cols]]" ></textarea>
+    <template is="dom-if" if="{{show(maxlength)}}">
+      <div id="contador" class="contador" style="margin-top: 5px; color: #555">Quedan: <strong class="green">{{quedan}}</strong> caracteres</div>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'jr-textarea',
+
+      properties: {
+        name: {
+          type: String,
+          value: 'undefined',
+        },
+        rows: {
+          type: Number,
+          value: 8,
+        },
+        cols: {
+          type: Number,
+          value: 80,
+        },
+        maxlength: {
+          type: Number,
+          value: 0,
+        }
+      },
+      calculaCaracteres: function(){
+        var diff = this.maxlength - this.$.area.value.length;
+        this.quedan = diff;
+      },
+      validar: function(){
+        if (this.$.area.value.length > 0) {
+          this.toggleClass('ok', true, this.$.area)
+          this.toggleClass('error', false, this.$.area)
+        }else{
+          this.toggleClass('ok', false, this.$.area)
+          this.toggleClass('error', true, this.$.area)
+        }
+      },
+      show: function(){
+        return this.maxlength > 0;
+      },
+      ready: function() {
+        this.quedan = this.maxlength;
+        this.$.area.setAttribute('maxlength', this.maxlength);
+      }
+    });
+  </script>
+</dom-module>
